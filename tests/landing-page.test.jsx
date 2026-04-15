@@ -3,6 +3,15 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { LandingPage } from "../src/LandingPage.jsx";
 
+function setViewportWidth(width) {
+  Object.defineProperty(window, "innerWidth", {
+    configurable: true,
+    writable: true,
+    value: width
+  });
+  window.dispatchEvent(new Event("resize"));
+}
+
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -23,6 +32,18 @@ describe("LandingPage", () => {
       screen.getByText(/for hikers, artists, and obsessive note-takers/i)
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+  });
+
+  it("switches the waitlist panel into a centered layout on tighter screens", () => {
+    setViewportWidth(1100);
+
+    render(<LandingPage />);
+
+    expect(
+      screen
+        .getByRole("heading", { name: /claim a spot on the first drop/i })
+        .closest("section")
+    ).toHaveClass("waitlist-panel-compact");
   });
 
   it("submits the email address and shows a success message", async () => {

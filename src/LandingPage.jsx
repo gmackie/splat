@@ -1,9 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const COMPACT_WAITLIST_BREAKPOINT = 1380;
+
+function shouldUseCompactWaitlistLayout() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  return window.innerWidth < COMPACT_WAITLIST_BREAKPOINT;
+}
 
 export function LandingPage() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
+  const [isCompactWaitlistLayout, setIsCompactWaitlistLayout] = useState(() =>
+    shouldUseCompactWaitlistLayout()
+  );
+
+  useEffect(() => {
+    function handleResize() {
+      setIsCompactWaitlistLayout(shouldUseCompactWaitlistLayout());
+    }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -98,7 +124,9 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="waitlist-panel">
+      <section
+        className={`waitlist-panel${isCompactWaitlistLayout ? " waitlist-panel-compact" : ""}`}
+      >
         <div className="waitlist-copy">
           <p className="panel-kicker">Trailhead access</p>
           <h2>Claim a spot on the first drop.</h2>

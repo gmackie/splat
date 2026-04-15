@@ -236,6 +236,8 @@ button:hover:not(:disabled) {
 }
 
 .waitlist-panel {
+  display: grid;
+  gap: 0.25rem;
   padding: 24px;
   border-radius: 30px;
   background:
@@ -320,6 +322,35 @@ button:hover:not(:disabled) {
   color: #aa382f;
 }
 
+.waitlist-panel-compact {
+  margin-inline: auto;
+  width: min(680px, 100%);
+}
+
+.waitlist-panel-compact .waitlist-copy,
+.waitlist-panel-compact .panel-copy,
+.waitlist-panel-compact .form-note,
+.waitlist-panel-compact .success-message,
+.waitlist-panel-compact .error-message {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.waitlist-panel-compact h2 {
+  max-width: none;
+}
+
+.waitlist-panel-compact .waitlist-form {
+  width: min(420px, 100%);
+  margin-inline: auto;
+}
+
+.waitlist-panel-compact .waitlist-form button {
+  width: 100%;
+  max-width: 360px;
+  justify-self: center;
+}
+
 .story-strip {
   display: grid;
   gap: 16px;
@@ -376,6 +407,11 @@ button:hover:not(:disabled) {
     margin-left: auto;
     width: min(540px, 100%);
     margin-top: -148px;
+  }
+
+  .waitlist-panel-compact {
+    margin: 0 auto;
+    width: min(680px, 100%);
   }
 
   .story-strip {
