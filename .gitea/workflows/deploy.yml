@@ -11,8 +11,8 @@ jobs:
       SERVICE_NAME: splat
       SERVICE_FILE: /etc/systemd/system/splat.service
       ENV_FILE: /etc/splat/env
-      PORT: 3000
-      HEALTH_URL: http://localhost:3000
+      PORT: 3005
+      HEALTH_URL: http://localhost:3005/api/health
 
     steps:
       - name: Build and deploy
