@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 
 const COMPACT_WAITLIST_BREAKPOINT = 1380;
+const COMPACT_WAITLIST_HEIGHT_BREAKPOINT = 900;
 
 function shouldUseCompactWaitlistLayout() {
   if (typeof window === "undefined") {
     return false;
   }
 
-  return window.innerWidth < COMPACT_WAITLIST_BREAKPOINT;
+  return (
+    window.innerWidth < COMPACT_WAITLIST_BREAKPOINT ||
+    window.innerHeight < COMPACT_WAITLIST_HEIGHT_BREAKPOINT
+  );
 }
 
 export function LandingPage() {

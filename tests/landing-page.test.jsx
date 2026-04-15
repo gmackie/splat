@@ -9,6 +9,19 @@ function setViewportWidth(width) {
     writable: true,
     value: width
   });
+}
+
+function setViewportHeight(height) {
+  Object.defineProperty(window, "innerHeight", {
+    configurable: true,
+    writable: true,
+    value: height
+  });
+}
+
+function setViewportSize({ width = window.innerWidth, height = window.innerHeight }) {
+  setViewportWidth(width);
+  setViewportHeight(height);
   window.dispatchEvent(new Event("resize"));
 }
 
@@ -35,7 +48,19 @@ describe("LandingPage", () => {
   });
 
   it("switches the waitlist panel into a centered layout on tighter screens", () => {
-    setViewportWidth(1100);
+    setViewportSize({ width: 1100, height: 1000 });
+
+    render(<LandingPage />);
+
+    expect(
+      screen
+        .getByRole("heading", { name: /claim a spot on the first drop/i })
+        .closest("section")
+    ).toHaveClass("waitlist-panel-compact");
+  });
+
+  it("switches the waitlist panel into a centered layout on shorter screens", () => {
+    setViewportSize({ width: 1440, height: 820 });
 
     render(<LandingPage />);
 
