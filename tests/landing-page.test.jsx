@@ -13,11 +13,14 @@ describe("LandingPage", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /turn real spaces into explorable splat scenes/i
+        name: /wild places deserve a better memory/i
       })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /join the waitlist/i })
+      screen.getByRole("button", { name: /claim a waitlist spot/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/for hikers, artists, and obsessive note-takers/i)
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
   });
@@ -33,7 +36,9 @@ describe("LandingPage", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "hello@example.com" }
     });
-    fireEvent.click(screen.getByRole("button", { name: /join the waitlist/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /claim a waitlist spot/i })
+    );
 
     await waitFor(() => {
       expect(
