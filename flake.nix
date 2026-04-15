@@ -40,12 +40,12 @@
             cp server.mjs package.json $out/app/
             cp -r node_modules $out/app/node_modules
 
-            makeWrapper ${nodejs}/bin/node $out/bin/splat \
-              --add-flags "$out/app/server.mjs" \
-              --set NODE_ENV production \
-              --set-default PORT 3000 \
-              --set-default DATA_DIR /var/lib/splat \
-              --chdir "$out/app"
+             makeWrapper ${nodejs}/bin/node $out/bin/splat \
+               --add-flags "$out/app/server.mjs" \
+               --set NODE_ENV production \
+               --set-default PORT 3005 \
+               --set-default DATA_DIR /var/lib/splat \
+               --chdir "$out/app"
 
             runHook postInstall
           '';
