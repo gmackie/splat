@@ -2,3 +2,5 @@
 # ForgeGraph
 .env.*
 !.env.example
+
+result
