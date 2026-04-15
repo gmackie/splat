@@ -1,0 +1,160 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&display=swap");
+
+:root {
+  color-scheme: light;
+  font-family: "Space Grotesk", sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(92, 198, 180, 0.24), transparent 35%),
+    linear-gradient(180deg, #0d1818 0%, #112422 42%, #f4efe3 42%, #f4efe3 100%);
+  color: #14221f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.page-shell {
+  min-height: 100vh;
+  padding: 32px;
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+.hero-panel,
+.waitlist-panel {
+  border-radius: 28px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 80px rgba(10, 24, 22, 0.14);
+}
+
+.hero-panel {
+  padding: 32px;
+  background: rgba(10, 23, 22, 0.76);
+  color: #f8f2e8;
+}
+
+.hero-panel h1,
+.waitlist-panel h2 {
+  font-family: "Fraunces", serif;
+  line-height: 0.95;
+  margin: 0;
+}
+
+.hero-panel h1 {
+  max-width: 10ch;
+  font-size: clamp(3rem, 9vw, 6.25rem);
+}
+
+.lede {
+  max-width: 38rem;
+  margin: 1.25rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(248, 242, 232, 0.84);
+}
+
+.eyebrow,
+.panel-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.pill-row {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.pill-row span {
+  border: 1px solid rgba(248, 242, 232, 0.18);
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  background: rgba(248, 242, 232, 0.06);
+}
+
+.waitlist-panel {
+  max-width: 34rem;
+  padding: 28px;
+  background: rgba(255, 251, 245, 0.88);
+}
+
+.waitlist-panel h2 {
+  font-size: clamp(2rem, 6vw, 3.25rem);
+}
+
+.panel-copy {
+  margin-top: 0.85rem;
+  line-height: 1.6;
+  color: #45534f;
+}
+
+.waitlist-form {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.waitlist-form label {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.waitlist-form input {
+  width: 100%;
+  border: 1px solid #b8c9c4;
+  border-radius: 16px;
+  padding: 0.95rem 1rem;
+  background: #fffefb;
+}
+
+.waitlist-form button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.95rem 1.15rem;
+  background: linear-gradient(135deg, #114d4e, #4e9b8e);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.waitlist-form button:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.success-message {
+  margin-top: 1rem;
+  color: #0f6c52;
+  font-weight: 700;
+}
+
+.error-message {
+  margin-top: 1rem;
+  color: #a22b2b;
+  font-weight: 700;
+}
+
+@media (min-width: 960px) {
+  .page-shell {
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.8fr);
+    padding: 48px;
+  }
+
+  .waitlist-panel {
+    margin-top: 4rem;
+  }
+}

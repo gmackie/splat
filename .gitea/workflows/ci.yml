@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install and build
+        id: build
+        run: |
+          npm ci
+          npm run build
+          echo "Built splat"
+
+      - name: Report build evidence
+        if: always()
+        uses: ./.gitea/actions/report-evidence
+        with:
+          forgegraph_url: ${{ vars.FORGEGRAPH_URL }}
+          api_token: ${{ secrets.FORGEGRAPH_TOKEN }}
+          repository_id: ${{ vars.FORGEGRAPH_REPOSITORY_ID }}
+          evidence_type: build
+          pipeline_name: ${{ github.workflow }}
+          status: ${{ steps.build.outcome == 'success' && 'passed' || 'failed' }}

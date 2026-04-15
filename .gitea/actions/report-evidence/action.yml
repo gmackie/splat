@@ -1,0 +1,57 @@
+name: Report Evidence to ForgeGraph
+description: Report build or test evidence to ForgeGraph
+
+inputs:
+  forgegraph_url:
+    description: ForgeGraph server URL
+    required: true
+  api_token:
+    description: ForgeGraph API token
+    required: true
+  repository_id:
+    description: ForgeGraph repository ID
+    required: false
+  changeset_id:
+    description: ForgeGraph changeset ID (auto-resolved from SHA if omitted)
+    required: false
+  evidence_type:
+    description: Evidence type (build or test_run)
+    required: true
+  pipeline_name:
+    description: CI pipeline name
+    required: false
+  suite_name:
+    description: Test suite name (for test_run evidence)
+    required: false
+  status:
+    description: Result status (passed, failed, error)
+    required: true
+  junit_path:
+    description: Path to JUnit XML test results
+    required: false
+  container_image:
+    description: Container image reference
+    required: false
+  container_digest:
+    description: Container image digest
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - run: ${{ github.action_path }}/report.sh
+      shell: bash
+      env:
+        FORGEGRAPH_URL: ${{ inputs.forgegraph_url }}
+        API_TOKEN: ${{ inputs.api_token }}
+        REPOSITORY_ID: ${{ inputs.repository_id }}
+        CHANGESET_ID: ${{ inputs.changeset_id }}
+        EVIDENCE_TYPE: ${{ inputs.evidence_type }}
+        PIPELINE_NAME: ${{ inputs.pipeline_name }}
+        SUITE_NAME: ${{ inputs.suite_name }}
+        STATUS: ${{ inputs.status }}
+        JUNIT_PATH: ${{ inputs.junit_path }}
+        CONTAINER_IMAGE: ${{ inputs.container_image }}
+        CONTAINER_DIGEST: ${{ inputs.container_digest }}
+        GIT_SHA: ${{ github.sha }}
+        GITHUB_REPOSITORY: ${{ github.repository }}

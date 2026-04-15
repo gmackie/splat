@@ -1,0 +1,91 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    env:
+      SERVICE_NAME: splat
+      SERVICE_FILE: /etc/systemd/system/splat.service
+      ENV_FILE: /etc/splat/env
+      PORT: 3000
+      HEALTH_URL: http://localhost:3000
+
+    steps:
+      - name: Build and deploy
+        run: |
+          set -eo pipefail
+          export HOME="${HOME:-/root}"
+          cd /opt/splat
+          git fetch origin main
+          git reset --hard origin/main
+
+          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+
+          # GC if low on disk
+          FREE_GB=$(df / --output=avail -BG | tail -1 | tr -d ' G')
+          if [ "$FREE_GB" -lt 15 ]; then
+            nix-collect-garbage -d 2>&1 | tail -3
+          fi
+
+          # Build
+          nix build .#splat \
+            --extra-experimental-features "nix-command flakes" \
+            --no-link --print-out-paths | tee /tmp/store-path
+          STORE_PATH=$(cat /tmp/store-path)
+
+          # Backup previous unit
+          cp "$SERVICE_FILE" /tmp/service.bak 2>/dev/null || true
+
+          # Write systemd unit
+          cat > /tmp/service.unit <<UNIT
+          [Unit]
+          Description=ForgeGraph managed: ${SERVICE_NAME}
+          After=network.target
+
+          [Service]
+          Type=simple
+          ExecStart=${STORE_PATH}/bin/${SERVICE_NAME}
+          EnvironmentFile=${ENV_FILE}
+          Environment=PORT=${PORT}
+          Restart=on-failure
+          RestartSec=5
+
+          [Install]
+          WantedBy=multi-user.target
+          UNIT
+          sed -i 's/^          //' /tmp/service.unit
+          sudo cp /tmp/service.unit "$SERVICE_FILE"
+
+          sudo systemctl daemon-reload
+          sudo systemctl restart "$SERVICE_NAME"
+
+          # Health check with rollback
+          for i in 1 2 3; do
+            sleep 5
+            if curl -sf "$HEALTH_URL" > /dev/null 2>&1; then
+              echo "✓ Health check passed"
+              break
+            fi
+            if [ "$i" = "3" ]; then
+              echo "✗ Rolling back"
+              [ -f /tmp/service.bak ] && sudo cp /tmp/service.bak "$SERVICE_FILE"
+              sudo systemctl daemon-reload
+              sudo systemctl restart "$SERVICE_NAME"
+              exit 1
+            fi
+          done
+
+          # Report evidence
+          . "$ENV_FILE" 2>/dev/null || true
+          if [ -n "$FG_API_TOKEN" ]; then
+            curl -sf -X POST http://localhost:4000/api/evidence \
+              -H "Authorization: Bearer $FG_API_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"type\":\"build\",\"status\":\"passed\",\"store_path\":\"$STORE_PATH\",\"commit_sha\":\"${{ github.sha }}\"}" \
+              || echo "Warning: failed to report evidence"
+          fi
+          echo "✓ Deployed splat"

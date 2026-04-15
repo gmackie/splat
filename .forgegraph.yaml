@@ -1,0 +1,6 @@
+app: splat
+server: https://forge.gmac.io
+
+stages:
+  - name: production
+    node: hetzner-master
